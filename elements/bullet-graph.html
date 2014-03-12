@@ -1,0 +1,25 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="./bullet-.html">
+
+<polymer-element name="bullet-graph" constructor="GBulletGraph" attributes="data" >
+	<template>
+		<template repeat="{{d in data}}">
+			<bullet- data="{{d}}"></bullet->
+		</template>
+	</template>
+	<script>
+		Polymer("bullet-graph", {
+			created: function(){
+				// this is probably not how I want to do this 
+				var data = this.getAttribute("data");
+				if(typeof data === "string"){
+					this.data = JSON.parse(data);
+				}else{
+					this.data = data;
+				}
+
+			}
+		});
+	</script>
+</polymer-element>
+

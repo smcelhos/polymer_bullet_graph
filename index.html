@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <!-- 1. Load platform support before any code that touches the DOM. -->
+    <script src="bower_components/platform/platform.js"></script>
+    <!-- 2. Load the component using an HTML Import -->
+	<link rel="import" href="elements/bullet-.html">
+	<link rel="import" href="elements/bullet-graph.html">
+	<script>
+		var data1 = [
+  {"title":"Revenue","subtitle":"US$, in thousands","ranges":[150,225,300],"measures":[220,270],"markers":[250], "test": true},
+  {"title":"Profit","subtitle":"%","ranges":[20,25,30],"measures":[21,23],"markers":[26]},
+  {"title":"Order Size","subtitle":"US$, average","ranges":[350,500,600],"measures":[100,320],"markers":[550]},
+  {"title":"New Customers","subtitle":"count","ranges":[1400,2000,2500],"measures":[1000,1650],"markers":[2100]},
+  {"title":"Satisfaction","subtitle":"out of 5","ranges":[3.5,4.25,5],"measures":[3.2,4.7],"markers":[4.4]}
+];
+
+	var data2 = [
+  {"title":"Changed","subtitle":"US$, in thousands","ranges":[90,140,300],"measures":[143],"markers":[200]},
+  {"title":"Profit","subtitle":"%","ranges":[100,200,220],"measures":[90,142],"markers":[200]},
+  {"title":"Order Size","subtitle":"US$, average","ranges":[350,500,600],"measures":[100,320],"markers":[550]},
+  {"title":"New Customers","subtitle":"count","ranges":[1400,2000,2500],"measures":[1600,2460],"markers":[2100]}
+]
+		var current = "data1";
+		function changeData(){
+			if(current === "data1"){
+				
+				document.getElementById('myBulletGraph').data = data2;
+				current = "data2";
+			}else{
+				document.getElementById('myBulletGraph').data = data1;
+				current = "data1";
+			}
+		}
+	
+	</script>
+  </head>
+  <body >
+	<h1>Polymer Bullet Graph</h1>
+	<hr />
+	<p>A Polymer version of BulletGraph widget</p>
+	<p>
+	TODO:
+		<ul>
+			<li>Remove (or take better advantage of) D3 dependency</li>
+			<li>Fix graphics, especially on partial data change</li>
+		</ul>
+		
+		</p>
+	<!-- Individual Bullet-->
+	<div>
+	<h2>Individual Bullet</h2>
+	<p>An individual bullet graph, componet piece of larger bullet graph</p>
+	<bullet- data='{"title":"Revenue","subtitle":"US$, in thousands","ranges":[150,225,300],"measures":[220,270],"markers":[250]}' id="loneBullet" >Mathamatics</bullet->
+	</div>
+	
+	<!-- Bullet Graph -->
+	<div>
+	<h2>Series of Bullet Graphs</h2>
+	<p>A Bullet Graph</p>
+	<bullet-graph id="myBulletGraph" data='[
+  {"title":"Revenue","subtitle":"US$, in thousands","ranges":[150,225,300],"measures":[220,270],"markers":[250], "test": true},
+  {"title":"Profit","subtitle":"%","ranges":[20,25,30],"measures":[21,23],"markers":[26]},
+  {"title":"Order Size","subtitle":"US$, average","ranges":[350,500,600],"measures":[100,320],"markers":[550]},
+  {"title":"New Customers","subtitle":"count","ranges":[1400,2000,2500],"measures":[1000,1650],"markers":[2100]},
+  {"title":"Satisfaction","subtitle":"out of 5","ranges":[3.5,4.25,5],"measures":[3.2,4.7],"markers":[4.4]}
+]'></bullet-graph>
+	</div>
+
+	<button onclick="changeData()">Change Data</button>
+	
+  </body>
+</html>

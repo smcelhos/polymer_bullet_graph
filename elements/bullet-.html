@@ -1,0 +1,56 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+
+
+<polymer-element name="bullet-" constructor="Bullet" attributes="data width">
+	<template>
+	<link rel="stylesheet" type="text/css" href="bullet-.css" />
+	<svg class="bullet" width="{{width}}" height="{{height}}">
+		<g transform="translate({{margin.left}},5)">
+			<!- ranges -->
+			<template repeat="{{range, i in ranges}}">
+				<rect class="range s{{i}}" width="{{range.width}}" height="{{range.height}}" x="{{range.x}}">
+				<animate attributeName="width" from="0" to="{{range.width}}" dur="{{duration}}ms"/>
+				</rect>
+			</template>
+			
+			<!-- measures -->
+			<template repeat="{{measure, i in measures}}">
+				<rect class="measure s{{i}}" width="{{measure.width}}" height="{{measure.height}}" x="{{measure.x}}" y="{{measure.y}}" >
+				<animate attributeName="width" from="0" to="{{measure.width}}" dur="{{duration}}ms"/>
+				</rect>
+			</template>
+			
+			<!-- markers -->
+			<template repeat="{{marker, i in markers}}">
+				<line class="marker" x1="{{marker.x1}}" x2="{{marker.x2}}" y1="{{marker.y1}}" y2="{{marker.y2}}"></line>
+			</template>
+			
+			<!-- ticks-->
+			<template repeat="{{tick, i in ticks}}">
+				<g class="tick" transform="translate({{tick.scaled}},0)" style="opacity: 1;">
+					
+                    <line y1="{{tick.height}}" y2="{{tick.height * 7/6}}">
+					
+					</line>
+					
+                    <text text-anchor="middle" dy="1em" y="{{tick.height * 7/6}}">{{tick.value}}</text>
+                </g>
+			</template>
+			
+			<!-- Title/subtitle-->
+			<g transform="translate(-6,12.5)" style="text-anchor: end;">
+				<text class="title">{{data.title}}</text>
+				<text class="subtitle" dy="1em">{{data.subtitle}}</text>
+			</g>	
+		</g>
+	</svg>
+	
+	
+	
+	</template>
+	<script src="d3.js"></script>
+	<script src="bullet-.js">
+		
+	</script>
+</polymer-element>
+
