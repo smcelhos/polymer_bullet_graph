@@ -7,6 +7,7 @@ TODO:
 -----------
   - Remove [d3js] dependency (or take better advantage of it)
   - Improve animations, especailly on partial data update
+  - Converge onto a single 'style'
   - Find/fix other problems
 
 Individual Bullet
@@ -22,6 +23,11 @@ BulletGraph
 
 ![bulletgraph](./bulletGraph.png)
 
+## Notes
+I use multiple styles.  For bullet- I have the css/js/html all split out into there own files.  To me this feels more natural, though admittedly, I should probably use a more meaningful folder structure.  For bullet-graph all markup/code is in a single file, most example code looks more like this.  I'm not 100% sure if this is because it tends to be small, or by design.
+
 [D3js BulletGraph]:http://bl.ocks.org/mbostock/4061961
 [d3js]:http://d3js.org
+
+
 
