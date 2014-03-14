@@ -70,11 +70,36 @@ Polymer("bullet-", {
 		// summary:
 		//		Scale to our x coordinate
 
-		// TODO: remove d3 dependency, or use fully
-		return d3.scale.linear()
-          .domain([0, Math.max(this.data.ranges[0], this.data.markers[0], this.data.measures[0])])
-          .range([0, this.graphWidth])(x);
+		var domain = [0, Math.max(this.data.ranges[0], this.data.markers[0], this.data.measures[0])];
+		var range = [0, this.graphWidth];
+		
+		return this._scale_bilinear(domain, range)(x);//interpolate(uninterpolate(x));
+	
 	},
+	
+	_uninterpolate: function(a, b){
+		b = b - (a = +a) ? 1 / (b - a) : 0;
+		return function(x) {
+		  return (x - a) * b;
+		};
+	},
+	
+	_interpolate: function(a, b){
+		b -= a = +a;
+		return function(t) {
+		  return a + b * t;
+		}
+	},
+	
+	_scale_bilinear: function(domain, range){
+		var u = this._uninterpolate(domain[0], domain[1]);
+		var i = this._interpolate(range[0], range[1]);
+		
+		return function(x){
+			return i(u(x));
+		}
+	},
+	
 	descending: function (a, b) {
         return b < a ? -1 : b > a ? 1 : b >= a ? 0 : NaN;
     },
@@ -141,20 +166,82 @@ Polymer("bullet-", {
 		
 		return markers;
 	},
+	
+	range_integerScale: function(x){
+		var k = 1;
+		while (x * k % 1) k *= 10;
+		return k;
+	},
+	// TODO: Rename
+	_range: function(start, stop, step){
+		// summary:
+		// 		Using start/stop/step create appropriate intervals
+		//	start: int
+		//		starting int
+		//	stop: int
+		//		stopping int
+		// step: int
+		//
+		//	return Number Array
+		//		range
+		
+		if (arguments.length < 3) {
+		  step = 1;
+		  if (arguments.length < 2) {
+			stop = start;
+			start = 0;
+		  }
+		}
+		
+		if ((stop - start) / step === Infinity){ throw new Error("infinite range") };
+
+		var range = [], k = this.range_integerScale(Math.abs(step)), i = -1, j;
+	
+		start *= k, stop *= k, step *= k;
+		if (step < 0){ 
+			while ((j = start + step * ++i) > stop) {range.push(j / k);} 
+		}else{ 
+			while ((j = start + step * ++i) < stop){ range.push(j / k);}
+		}
+		
+		return range;
+	},
+	
+	extent: function(m){
+	
+		var extent = [0, /*should prob be min*/ Math.max(this.data.ranges[0], this.data.markers[0], this.data.measures[0])];
+		var span = extent[1] - extent[0];
+		var step = Math.pow(10, Math.floor(Math.log(span / m) / Math.LN10)), err = m / span * step;
+		
+		if (err <= .15){step *= 10;} else if (err <= .35) {step *= 5; }else if (err <= .75) {step *= 2};
+		extent[0] = Math.ceil(extent[0] / step) * step;
+		extent[1] = Math.floor(extent[1] / step) * step + step * .5;
+		extent[2] = step;
+		
+		return extent;
+	
+	},
+	
 	tickz: function(){
 		// summary:
 		//		Create a list (array) of tick marks appropriate for our scale
 		//	return Array
 		//		An array of tick objects with properties for our template to bind too
+		var m = 8; // magic number, max number of ticks
+		// TODO: see if we need to use min instead of 0
+		var extent = this.extent(m);
+		var start = extent[0];
+		var stop = extent[1];
+		var step = extent[2];
 		
-		// TODO: remove d3 dependency, or use to full effect
-		var base = d3.scale.linear()
-          .domain([0, Math.max(this.data.ranges[0], this.data.markers[0], this.data.measures[0])])
-          .range([0, this.graphWidth]).ticks(8);
+		var range = this._range(start, stop, step);
+		
+		
+		// TODO: remove d3 dependency, or use to full effect  
 		  
 		 var scale = this.scale.bind(this);
 		var graphHeight = this.graphHeight;
-		var ticks = base.map(function(tick){
+		var ticks = range.map(function(tick){
 			return { 
 				value: tick,
 				height: graphHeight,
